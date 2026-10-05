@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSC Professional Level — Hard Mode 150-Item Reviewer</title>
+<style>
+:root{
+  --bg:#f4f7fb; --card:#fff; --ink:#172033; --muted:#64748b;
+  --primary:#123b6d; --primary2:#0b5cab; --accent:#00a86b;
+  --danger:#c62828; --border:#dbe3ee; --soft:#eef4fb;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+header{background:linear-gradient(135deg,#0b2d52,#1769aa);color:#fff;padding:24px 18px;position:sticky;top:0;z-index:20;box-shadow:0 3px 14px #0002}
+.wrap{max-width:1200px;margin:auto}
+h1{margin:0 0 6px;font-size:clamp(22px,3vw,34px)}
+.sub{opacity:.9;font-size:14px}
+.topbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.timer{font-variant-numeric:tabular-nums;font-size:28px;font-weight:800;background:#071c34;padding:9px 15px;border-radius:10px;min-width:120px;text-align:center}
+.timer.warn{background:#8a5a00}.timer.danger{background:#9f1d1d}
+button{border:0;border-radius:9px;padding:11px 15px;font-weight:700;cursor:pointer}
+.btn-primary{background:#fff;color:#123b6d}.btn-dark{background:#08213c;color:#fff}.btn-green{background:var(--accent);color:#fff}.btn-red{background:#c62828;color:#fff}
+main{padding:22px 14px 60px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 4px 18px #19324d0b}
+.exam{padding:22px}
+.sidebar{padding:18px;position:sticky;top:150px;height:max-content}
+.badge{display:inline-block;background:var(--soft);color:var(--primary);padding:6px 9px;border-radius:20px;font-size:12px;font-weight:800}
+.question-no{font-size:13px;color:var(--muted);margin:12px 0 8px}
+.question{font-size:20px;line-height:1.5;font-weight:750;margin:0 0 18px}
+.choice{display:block;border:1px solid var(--border);border-radius:10px;padding:13px 14px;margin:10px 0;cursor:pointer;transition:.15s;background:#fff}
+.choice:hover{border-color:#7da6d0;background:#f8fbff}
+.choice input{margin-right:10px;accent-color:#1769aa}
+.choice.selected{border-color:#1769aa;background:#eef6ff}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+.nav button{min-width:110px}
+.progress{height:9px;background:#e7edf5;border-radius:20px;overflow:hidden;margin:10px 0 14px}
+.progress>div{height:100%;background:#1769aa;width:0}
+.palette{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:12px}
+.pnum{padding:7px 0;font-size:11px;border-radius:6px;background:#eef2f7;color:#334155;text-align:center;cursor:pointer;border:1px solid transparent}
+.pnum.answered{background:#d9f3e8;color:#08653f}.pnum.current{border-color:#1769aa;box-shadow:0 0 0 2px #1769aa22}.pnum.flag{background:#fff0c2}
+.small{font-size:12px;color:var(--muted);line-height:1.5}
+.section-list{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0 18px}
+.section-list span{font-size:11px;padding:5px 7px;border-radius:6px;background:#eef2f7}
+.result{display:none;padding:20px;margin-bottom:18px}
+.result.show{display:block}
+.score{font-size:44px;font-weight:900;color:#123b6d}
+.review-item{border-top:1px solid var(--border);padding:16px 0}
+.correct{color:#087443;font-weight:800}.wrong{color:#b42318;font-weight:800}
+.answer-box{margin-top:9px;padding:10px;border-radius:8px;background:#f7fafc}
+.start-overlay{position:fixed;inset:0;background:#071c34dd;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.start-box{max-width:650px;background:#fff;border-radius:16px;padding:30px;box-shadow:0 20px 60px #0005}
+.start-box h2{margin-top:0}
+.start-box li{margin:8px 0}
+.note{background:#fff9e6;border-left:4px solid #d69e00;padding:12px;margin:14px 0;font-size:13px}
+.hidden{display:none!important}
+footer{padding:20px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.sidebar{position:static}.question{font-size:18px}.palette{grid-template-columns:repeat(10,1fr)}header{position:static}}
+</style>
+</head>
+<body>
+
+<div class="start-overlay" id="startOverlay">
+  <div class="start-box">
+    <h2>CSC Professional Level — HARD MODE</h2>
+    <p><b>150-item practice reviewer</b> with countdown timer, answer tracking, scoring, and explanations.</p>
+    <ul>
+      <li>Default timer: <b>3 hours 10 minutes</b>.</li>
+      <li>Choose one answer per item. You may move back and forth before submission.</li>
+      <li>Answers and explanations are revealed after you submit.</li>
+      <li>Practice target: <b>80% = 120/150</b>. This is only a reviewer benchmark; it is not a computation of an official CSC rating.</li>
+    </ul>
+    <div class="note"><b>Important:</b> This is an original practice set. It is not an official CSC questionnaire or CSC-endorsed review material.</div>
+    <button class="btn-dark" onclick="startExam()">START EXAM</button>
+  </div>
+</div>
+
+<header>
+  <div class="wrap">
+    <h1>CSC Professional Level — Hard Mode</h1>
+    <div class="sub">150-Item Interactive Reviewer • Verbal • Numerical • Analytical • General Information</div>
+    <div class="topbar">
+      <div class="timer" id="timer">03:10:00</div>
+      <button class="btn-primary" onclick="submitExam()">SUBMIT EXAM</button>
+      <button class="btn-primary" onclick="confirmReset()">RESET</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="result" class="card result"></div>
+
+  <div class="grid">
+    <section class="card exam">
+      <div class="section-list" id="sectionTags"></div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <div class="question-no" id="questionNo"></div>
+      <div class="badge" id="sectionBadge"></div>
+      <p class="question" id="questionText"></p>
+      <div id="choices"></div>
+      <div class="nav">
+        <button class="btn-dark" onclick="prevQuestion()">← PREVIOUS</button>
+        <button class="btn-dark" onclick="toggleFlag()" id="flagBtn">⚑ MARK</button>
+        <button class="btn-dark" onclick="nextQuestion()">NEXT →</button>
+      </div>
+    </section>
+
+    <aside class="card sidebar">
+      <h3 style="margin-top:0">Question Navigator</h3>
+      <div class="small">Green = answered • Yellow = marked • Blue outline = current</div>
+      <div class="palette" id="palette"></div>
+      <hr style="border:0;border-top:1px solid var(--border);margin:18px 0">
+      <div><b>Answered:</b> <span id="answeredCount">0</span>/150</div>
+      <div><b>Marked:</b> <span id="flagCount">0</span></div>
+      <div class="small" style="margin-top:14px">Tip: For a true exam simulation, avoid checking explanations until you submit.</div>
+    </aside>
+  </div>
+</main>
+
+<footer>
+  Practice material only. Official CSC announcements and examination coverage should be checked on the CSC website.
+</footer>
+
+<script>
+const questions = [{"section": "Verbal Ability", "q": "The committee's decision was ______ by the evidence presented during the inquiry.", "choices": ["vindicated", "vindictive", "vacillating", "vitiated"], "ans": 0, "explanation": "“Vindicated” means shown to be justified or correct."}, {"section": "Verbal Ability", "q": "Her explanation was so ______ that even the most skeptical members accepted it.", "choices": ["equivocal", "cogent", "capricious", "perfunctory"], "ans": 1, "explanation": "“Cogent” means clear, logical, and convincing."}, {"section": "Verbal Ability", "q": "Choose the word closest in meaning to INTRANSIGENT.", "choices": ["yielding", "unyielding", "ambiguous", "impartial"], "ans": 1, "explanation": "Intransigent means unwilling to compromise or change."}, {"section": "Verbal Ability", "q": "Choose the word opposite in meaning to TACITURN.", "choices": ["reserved", "reticent", "loquacious", "discreet"], "ans": 2, "explanation": "Taciturn means habitually quiet; loquacious means very talkative."}, {"section": "Verbal Ability", "q": "The auditor found the explanation ______ because it relied on assumptions rather than verifiable records.", "choices": ["tenable", "specious", "salient", "lucid"], "ans": 1, "explanation": "Specious means apparently convincing but actually unsound."}, {"section": "Verbal Ability", "q": "The policy was intended to ______ the disparity between the two offices.", "choices": ["exacerbate", "mitigate", "obviate", "construe"], "ans": 1, "explanation": "Mitigate means lessen or reduce the severity of something."}, {"section": "Verbal Ability", "q": "His remarks were deliberately ______, allowing several interpretations.", "choices": ["unequivocal", "ambiguous", "conclusive", "categorical"], "ans": 1, "explanation": "Ambiguous language permits more than one interpretation."}, {"section": "Verbal Ability", "q": "The report should be ______ enough to withstand independent scrutiny.", "choices": ["tenuous", "robust", "nebulous", "sporadic"], "ans": 1, "explanation": "Robust here means strong and able to withstand challenge."}, {"section": "Verbal Ability", "q": "Choose the word closest in meaning to ABERRATION.", "choices": ["deviation", "consensus", "precision", "continuity"], "ans": 0, "explanation": "An aberration is a departure from what is normal or expected."}, {"section": "Verbal Ability", "q": "The officer's ______ handling of confidential records raised serious concerns.", "choices": ["circumspect", "discreet", "imprudent", "methodical"], "ans": 2, "explanation": "Imprudent means lacking sound judgment or caution."}, {"section": "Verbal Ability", "q": "Neither the division chief nor the supervisors ______ authorized to alter the approved schedule.", "choices": ["is", "was", "are", "has"], "ans": 2, "explanation": "With “neither...nor,” the verb agrees with the nearer plural subject “supervisors.”"}, {"section": "Verbal Ability", "q": "Each of the submitted reports ______ been reviewed by the committee.", "choices": ["have", "has", "were", "are"], "ans": 1, "explanation": "“Each” is singular, so “has” is correct."}, {"section": "Verbal Ability", "q": "The memorandum, together with its attachments, ______ forwarded yesterday.", "choices": ["were", "have been", "was", "are"], "ans": 2, "explanation": "The subject is singular: “memorandum”; “together with” does not change agreement."}, {"section": "Verbal Ability", "q": "If the records ______ available earlier, the discrepancy could have been detected sooner.", "choices": ["were", "had been", "have been", "would be"], "ans": 1, "explanation": "Past unreal condition uses “had been.”"}, {"section": "Verbal Ability", "q": "The director insisted that every applicant ______ the form personally.", "choices": ["signs", "signed", "sign", "will sign"], "ans": 2, "explanation": "After “insisted that,” the mandative subjunctive uses the base form “sign.”"}, {"section": "Verbal Ability", "q": "The team completed the migration ______ than originally projected.", "choices": ["more efficiently", "most efficiently", "efficientlier", "more efficient"], "ans": 0, "explanation": "“More efficiently” is the correct adverbial comparative."}, {"section": "Verbal Ability", "q": "Which sentence is grammatically correct?", "choices": ["Between you and I, the proposal is risky.", "Between you and me, the proposal is risky.", "Between you and myself, the proposal is risky.", "Between yourself and I, the proposal is risky."], "ans": 1, "explanation": "The preposition “between” takes object pronouns: “you and me.”"}, {"section": "Verbal Ability", "q": "Which sentence is clearest and most concise?", "choices": ["Due to the fact that the server was unavailable, the process was delayed.", "Because the server was unavailable, the process was delayed.", "The process was delayed on account of the fact of server unavailability.", "The process experienced a delay due to the server being in an unavailable condition."], "ans": 1, "explanation": "“Because” is direct and concise."}, {"section": "Verbal Ability", "q": "Choose the sentence with correct parallel structure.", "choices": ["The project requires planning, testing, and to document.", "The project requires planning, testing, and documentation.", "The project requires to plan, testing, and documentation.", "The project requires planning, to test, and documenting."], "ans": 1, "explanation": "The three items are parallel nouns/gerunds: planning, testing, documentation."}, {"section": "Verbal Ability", "q": "Choose the best completion: The committee postponed the meeting ______.", "choices": ["because several members were absent", "because of several members were absent", "due several members being absent", "owing several members were absent"], "ans": 0, "explanation": "“Because” correctly introduces a clause."}, {"section": "Verbal Ability", "q": "Arrange the sentences to form the most coherent paragraph: (1) Consequently, the agency adopted a centralized backup policy. (2) Several offices had been keeping independent copies of critical files. (3) An audit revealed inconsistent retention periods and recovery procedures. (4) This fragmentation made disaster recovery unpredictable.", "choices": ["2-4-3-1", "3-2-4-1", "2-3-1-4", "4-2-3-1"], "ans": 0, "explanation": "The situation is introduced, its consequence stated, the audit finding follows, then the policy response."}, {"section": "Verbal Ability", "q": "Arrange the sentences logically: (1) The data were then validated against source records. (2) First, the team identified duplicate entries. (3) Finally, the corrected dataset was archived. (4) Afterward, the erroneous entries were removed.", "choices": ["2-4-1-3", "2-1-4-3", "4-2-1-3", "1-2-4-3"], "ans": 0, "explanation": "The sequence follows first → removal → validation → final archiving."}, {"section": "Verbal Ability", "q": "The manager approved the request, ______ the supporting documents were incomplete.", "choices": ["because", "although", "therefore", "unless"], "ans": 1, "explanation": "“Although” expresses contrast."}, {"section": "Verbal Ability", "q": "The new procedure is not only faster ______ more reliable.", "choices": ["and", "but also", "but", "as"], "ans": 1, "explanation": "The correlative construction is “not only...but also.”"}, {"section": "Verbal Ability", "q": "The phrase “at the eleventh hour” most nearly means:", "choices": ["at exactly 11:00 a.m.", "at the earliest opportunity", "at the last possible moment", "after official office hours"], "ans": 2, "explanation": "It means very late, near the deadline."}, {"section": "Verbal Ability", "q": "In the sentence “The proposal was tabled pending further review,” the intended meaning in formal usage is that the proposal was:", "choices": ["approved immediately", "set aside for later consideration", "physically placed on a table", "rejected permanently"], "ans": 1, "explanation": "In this context, “tabled” means deferred for later consideration."}, {"section": "Verbal Ability", "q": "Which sentence contains an error in modifier placement?", "choices": ["After reviewing the records, the auditor issued a finding.", "While reviewing the records, the discrepancy became obvious to the auditor.", "The auditor issued a finding after reviewing the records.", "After the review, the auditor issued a finding."], "ans": 1, "explanation": "The introductory modifier “While reviewing...” should modify a person, not “the discrepancy.”"}, {"section": "Verbal Ability", "q": "Which sentence uses “comprise” correctly?", "choices": ["The committee is comprised of five members.", "Five members comprise the committee.", "The committee comprises of five members.", "Five members are comprising the committee."], "ans": 1, "explanation": "“Comprise” means include; “five members comprise the committee” is correct."}, {"section": "Verbal Ability", "q": "Choose the most precise word: The memorandum ______ that all units submit their inventories by Friday.", "choices": ["infers", "implies", "stipulates", "insinuates"], "ans": 2, "explanation": "“Stipulates” means specifies as a requirement."}, {"section": "Verbal Ability", "q": "The witness's account was ______ with the timestamp recorded by the access-control system.", "choices": ["congruent", "contemptuous", "conspicuous", "convoluted"], "ans": 0, "explanation": "Congruent means in agreement or harmony."}, {"section": "Verbal Ability", "q": "Read: “The office introduced automation to reduce repetitive encoding. However, error rates did not decline because staff continued to re-enter information from printed forms.” What is the main reason the intended benefit was not realized?", "choices": ["The automation system was removed.", "Staff lacked access to computers.", "A manual step remained in the workflow.", "The office increased its staffing level."], "ans": 2, "explanation": "The passage directly identifies continued re-entry from printed forms as the problem."}, {"section": "Verbal Ability", "q": "Read: “A rule may be consistently applied yet still produce inequitable outcomes if the circumstances to which it is applied differ substantially.” Which idea is best supported?", "choices": ["Consistency always guarantees fairness.", "Uniform application can sometimes ignore relevant differences.", "Rules should never be applied consistently.", "Different outcomes always prove discrimination."], "ans": 1, "explanation": "The statement distinguishes consistency from equity."}, {"section": "Verbal Ability", "q": "Read: “The report contains abundant data, but only a small portion directly addresses the decision before the board.” Which criticism is most justified?", "choices": ["The report lacks any evidence.", "The report may contain more information than is decision-relevant.", "The board should disregard all quantitative data.", "The report is necessarily inaccurate."], "ans": 1, "explanation": "The issue is relevance, not quantity or accuracy."}, {"section": "Verbal Ability", "q": "Which sentence best preserves formal tone?", "choices": ["We need to fix this mess ASAP.", "Please rectify the discrepancy at your earliest convenience.", "You guys should fix the numbers soon.", "Kindly do the needful on this issue."], "ans": 1, "explanation": "The second is formal, precise, and professional."}, {"section": "Verbal Ability", "q": "Choose the sentence with correct pronoun reference.", "choices": ["When Maria spoke to Ana, she said the report was incomplete.", "Maria told Ana that Maria's report was incomplete.", "When Maria spoke to Ana, the latter said that the report was incomplete.", "Maria spoke to Ana, and this made her report incomplete."], "ans": 2, "explanation": "“The latter” clearly refers to Ana."}, {"section": "Verbal Ability", "q": "The phrase “notwithstanding the delay” most nearly means:", "choices": ["because of the delay", "despite the delay", "before the delay", "until the delay"], "ans": 1, "explanation": "Notwithstanding means despite or in spite of."}, {"section": "Verbal Ability", "q": "Which conclusion is logically supported? “All approved requests are logged. Some logged requests are urgent.”", "choices": ["All urgent requests are approved.", "Some approved requests are urgent.", "No approved requests are urgent.", "Some logged requests may not be approved."], "ans": 3, "explanation": "The premises allow logged requests that are not approved; no stronger conclusion follows."}, {"section": "Verbal Ability", "q": "Choose the best transition: “The initial test showed promising results. ______, the sample size was too small to support a broad conclusion.”", "choices": ["Similarly", "Nevertheless", "For example", "Consequently"], "ans": 1, "explanation": "“Nevertheless” signals contrast."}, {"section": "Verbal Ability", "q": "Which sentence has the most appropriate logical relationship?", "choices": ["The server failed; therefore, the backup was verified beforehand.", "The server failed; nevertheless, service was restored using the standby system.", "The server failed; because, service was restored.", "The server failed; similarly, service was restored by the standby system."], "ans": 1, "explanation": "“Nevertheless” appropriately introduces an outcome despite the failure."}, {"section": "Numerical Ability", "q": "A budget of ₱480,000 is reduced by 12.5%. What is the new budget?", "choices": ["₱410,000", "₱420,000", "₱425,000", "₱440,000"], "ans": 1, "explanation": "12.5% of ₱480,000 is ₱60,000; remaining = ₱420,000."}, {"section": "Numerical Ability", "q": "A value increases from 640 to 800. What is the percentage increase?", "choices": ["20%", "22.5%", "25%", "28%"], "ans": 2, "explanation": "(160/640)×100 = 25%."}, {"section": "Numerical Ability", "q": "If 3/5 of a number is 84, what is the number?", "choices": ["120", "135", "140", "150"], "ans": 2, "explanation": "84 ÷ 3/5 = 140."}, {"section": "Numerical Ability", "q": "A project is 35% complete after 14 days at a constant rate. How many total days would completion require?", "choices": ["35", "40", "45", "50"], "ans": 1, "explanation": "14 ÷ 0.35 = 40 days."}, {"section": "Numerical Ability", "q": "A printer produces 72 pages in 8 minutes. At the same rate, how many pages in 35 minutes?", "choices": ["300", "315", "320", "336"], "ans": 1, "explanation": "72/8 = 9 pages/min; 9×35 = 315."}, {"section": "Numerical Ability", "q": "A number is increased by 20% and then decreased by 20%. Compared with the original, the result is:", "choices": ["unchanged", "4% lower", "4% higher", "8% lower"], "ans": 1, "explanation": "1.20×0.80 = 0.96, or 4% lower."}, {"section": "Numerical Ability", "q": "The average of five numbers is 42. If four are 31, 45, 52, and 38, the fifth is:", "choices": ["42", "44", "46", "48"], "ans": 1, "explanation": "Total is 5×42=210; known sum is 166; fifth = 44."}, {"section": "Numerical Ability", "q": "A worker's salary is increased by 8% and later by another 5%. The total increase is:", "choices": ["13%", "13.4%", "13.6%", "14%"], "ans": 1, "explanation": "Successive increases compound: 1.08×1.05 = 1.134, or 13.4%."}, {"section": "Numerical Ability", "q": "If 4 machines complete a task in 15 hours at equal rates, how long would 6 machines take?", "choices": ["8 hours", "10 hours", "12 hours", "13 hours"], "ans": 1, "explanation": "Machine-hours = 4×15=60; 60÷6=10 hours."}, {"section": "Numerical Ability", "q": "A tank is 3/8 full. After adding 25 liters, it is 5/8 full. What is the tank's capacity?", "choices": ["75 L", "90 L", "100 L", "125 L"], "ans": 2, "explanation": "25 L represents 2/8=1/4 of capacity; capacity = 100 L."}, {"section": "Numerical Ability", "q": "A ratio of A:B is 7:9. If A+B=128, what is A?", "choices": ["49", "56", "63", "72"], "ans": 1, "explanation": "16 parts = 128, so 1 part=8; A=56."}, {"section": "Numerical Ability", "q": "A store marks an item up by 40% from cost, then gives a 15% discount on marked price. The selling price is what percent of cost?", "choices": ["115%", "119%", "121%", "125%"], "ans": 1, "explanation": "1.40×0.85 = 1.19, or 119%."}, {"section": "Numerical Ability", "q": "A vehicle travels 180 km in 2.5 hours. Its average speed is:", "choices": ["60 km/h", "72 km/h", "75 km/h", "80 km/h"], "ans": 1, "explanation": "180÷2.5 = 72 km/h."}, {"section": "Numerical Ability", "q": "A train 180 m long passes a post in 9 seconds. Its speed is:", "choices": ["18 m/s", "20 m/s", "22 m/s", "24 m/s"], "ans": 1, "explanation": "180÷9 = 20 m/s."}, {"section": "Numerical Ability", "q": "Convert 20 m/s to km/h.", "choices": ["54", "60", "72", "80"], "ans": 2, "explanation": "Multiply m/s by 3.6: 20×3.6=72 km/h."}, {"section": "Numerical Ability", "q": "If x + 1/x = 5, what is x² + 1/x²?", "choices": ["21", "23", "25", "27"], "ans": 1, "explanation": "Square: x²+2+1/x²=25, so result=23."}, {"section": "Numerical Ability", "q": "If 2x−7=3x+5, x equals:", "choices": ["−12", "−5", "5", "12"], "ans": 0, "explanation": "−7−5=x, so x=−12."}, {"section": "Numerical Ability", "q": "If 3(x−4)=2(x+5)+7, x equals:", "choices": ["17", "19", "21", "29"], "ans": 3, "explanation": "3x−12=2x+17, so x=29."}, {"section": "Numerical Ability", "q": "A sequence is 2, 6, 12, 20, 30, __. What is the next term?", "choices": ["40", "42", "44", "46"], "ans": 1, "explanation": "Differences are 4,6,8,10; next difference 12, giving 42."}, {"section": "Numerical Ability", "q": "A sequence is 81, 54, 36, 24, __. What is the next term?", "choices": ["12", "16", "18", "20"], "ans": 1, "explanation": "Each term is multiplied by 2/3; 24×2/3=16."}, {"section": "Numerical Ability", "q": "A sequence is 5, 8, 14, 26, 50, __. What is the next term?", "choices": ["74", "86", "98", "102"], "ans": 2, "explanation": "Differences double: 3,6,12,24; next +48 = 98."}, {"section": "Numerical Ability", "q": "A sequence is 1, 4, 10, 22, 46, __. What is next?", "choices": ["82", "90", "94", "96"], "ans": 2, "explanation": "Each term is ×2 +2: 46×2+2=94."}, {"section": "Numerical Ability", "q": "A sequence is 3, 9, 27, 81, __.", "choices": ["162", "216", "243", "324"], "ans": 2, "explanation": "Multiply by 3 each time; 81×3=243."}, {"section": "Numerical Ability", "q": "A number divided by 7 leaves remainder 5. Which could be the number?", "choices": ["33", "40", "47", "51"], "ans": 1, "explanation": "40 = 7×5 + 5."}, {"section": "Numerical Ability", "q": "What is the least positive integer divisible by 6, 8, and 15?", "choices": ["60", "90", "120", "240"], "ans": 2, "explanation": "LCM(6,8,15)=120."}, {"section": "Numerical Ability", "q": "A group has 20 men and 12 women. If 15% of the men and 25% of the women are absent, how many are present?", "choices": ["25", "26", "27", "28"], "ans": 1, "explanation": "3 men and 3 women are absent; 32−6=26."}, {"section": "Numerical Ability", "q": "A contractor allocates 30% of a project budget to labor and 45% to materials. If ₱250,000 remains for other costs, what is the total budget?", "choices": ["₱900,000", "₱1,000,000", "₱1,250,000", "₱1,500,000"], "ans": 1, "explanation": "Remaining is 25%; ₱250,000 ÷ .25 = ₱1,000,000."}, {"section": "Numerical Ability", "q": "An item costs ₱1,728 after a 10% discount. What was its original price?", "choices": ["₱1,900", "₱1,920", "₱1,950", "₱2,000"], "ans": 1, "explanation": "1,728 ÷ .90 = ₱1,920."}, {"section": "Numerical Ability", "q": "A 12% annual simple interest on ₱50,000 for 18 months is:", "choices": ["₱7,500", "₱8,000", "₱9,000", "₱10,000"], "ans": 2, "explanation": "I=Prt=50,000×0.12×1.5=9,000."}, {"section": "Numerical Ability", "q": "A ₱80,000 principal earns 6% simple interest. What is the amount after 2.5 years?", "choices": ["₱88,000", "₱90,000", "₱92,000", "₱96,000"], "ans": 2, "explanation": "Interest=80,000×.06×2.5=12,000; amount=92,000."}, {"section": "Numerical Ability", "q": "A class has 40 students. The ratio of passers to non-passers is 7:3. How many passed?", "choices": ["24", "26", "28", "30"], "ans": 2, "explanation": "10 parts=40, so each=4; passers=28."}, {"section": "Numerical Ability", "q": "If 2/3 of a number exceeds 1/4 of it by 35, the number is:", "choices": ["72", "84", "96", "108"], "ans": 1, "explanation": "(2/3−1/4)=5/12; (5/12)x=35, x=84."}, {"section": "Numerical Ability", "q": "A worker completes 3/7 of a task in 6 hours. At the same rate, how many hours for the whole task?", "choices": ["12", "14", "16", "18"], "ans": 1, "explanation": "6 ÷ 3/7 = 14."}, {"section": "Numerical Ability", "q": "A data set has mean 18. If every value is increased by 7, the new mean is:", "choices": ["18", "21", "24", "25"], "ans": 3, "explanation": "Adding 7 to every value adds 7 to the mean: 25."}, {"section": "Numerical Ability", "q": "The median of 7, 3, 12, 9, 5, 15, 8 is:", "choices": ["7", "8", "9", "12"], "ans": 1, "explanation": "Sorted: 3,5,7,8,9,12,15; median=8."}, {"section": "Numerical Ability", "q": "The probability of drawing an ace from a standard 52-card deck is:", "choices": ["1/13", "1/12", "4/13", "1/4"], "ans": 0, "explanation": "There are 4 aces among 52 cards: 4/52=1/13."}, {"section": "Numerical Ability", "q": "Two fair dice are rolled. What is the probability of getting a sum of 9?", "choices": ["1/6", "1/9", "1/12", "1/18"], "ans": 1, "explanation": "Four outcomes: (3,6),(4,5),(5,4),(6,3), so 4/36=1/9."}, {"section": "Numerical Ability", "q": "A box contains 5 red, 3 blue, and 2 green balls. Probability of selecting a ball that is not blue:", "choices": ["3/10", "1/2", "7/10", "4/5"], "ans": 2, "explanation": "7 of 10 balls are not blue."}, {"section": "Numerical Ability", "q": "If 40% of x equals 24, then 15% of x equals:", "choices": ["6", "8", "9", "12"], "ans": 2, "explanation": "x=60; 15% of 60=9."}, {"section": "Numerical Ability", "q": "A quantity is reduced from 2,500 to 2,125. The percentage decrease is:", "choices": ["12%", "15%", "17.5%", "18%"], "ans": 1, "explanation": "Decrease=375; 375/2500=15%."}, {"section": "Numerical Ability", "q": "A 30% markup is followed by a 30% discount. Compared with cost, the final price is:", "choices": ["9% lower", "unchanged", "9% higher", "18% lower"], "ans": 0, "explanation": "1.30×.70=.91, so 9% lower."}, {"section": "Numerical Ability", "q": "If 5 workers need 18 days, but after 6 days 2 workers leave, how many additional days will the remaining 3 workers need, assuming equal productivity?", "choices": ["14", "18", "20", "24"], "ans": 2, "explanation": "Total work=5×18=90 worker-days; 6 days use 30; remaining 60; 60÷3=20 days."}, {"section": "Analytical Ability", "q": "BOOK : AUTHOR :: STATUTE : ______", "choices": ["lawyer", "legislator", "judge", "witness"], "ans": 1, "explanation": "An author creates a book; a legislator creates/enacts a statute."}, {"section": "Analytical Ability", "q": "DIAGNOSIS : PHYSICIAN :: AUDIT : ______", "choices": ["accountant", "architect", "chemist", "editor"], "ans": 0, "explanation": "A physician performs diagnosis; an accountant performs an audit."}, {"section": "Analytical Ability", "q": "SCARCITY : ABUNDANCE :: AMBIGUITY : ______", "choices": ["uncertainty", "clarity", "complexity", "brevity"], "ans": 1, "explanation": "Scarcity contrasts with abundance; ambiguity contrasts with clarity."}, {"section": "Analytical Ability", "q": "THERMOMETER : TEMPERATURE :: BAROMETER : ______", "choices": ["humidity", "pressure", "altitude", "velocity"], "ans": 1, "explanation": "A thermometer measures temperature; a barometer measures pressure."}, {"section": "Analytical Ability", "q": "BLUEPRINT : BUILDING :: ALGORITHM : ______", "choices": ["database", "program", "keyboard", "network"], "ans": 1, "explanation": "A blueprint guides construction; an algorithm guides a program/process."}, {"section": "Analytical Ability", "q": "Which conclusion necessarily follows? All encrypted files require a key. File X is encrypted.", "choices": ["File X is inaccessible.", "File X requires a key.", "Only File X requires a key.", "File X is securely stored."], "ans": 1, "explanation": "Direct application of the universal premise."}, {"section": "Analytical Ability", "q": "All supervisors are employees. Some employees are auditors. Which conclusion is certain?", "choices": ["Some supervisors are auditors.", "All auditors are supervisors.", "Some auditors are employees.", "No supervisors are auditors."], "ans": 2, "explanation": "The second premise explicitly says some employees are auditors."}, {"section": "Analytical Ability", "q": "No temporary staff are authorized signatories. Ana is an authorized signatory. Therefore:", "choices": ["Ana is temporary staff.", "Ana is not temporary staff.", "Ana may be temporary staff.", "All signatories are permanent staff."], "ans": 1, "explanation": "Contrapositive of the stated exclusion applies to Ana."}, {"section": "Analytical Ability", "q": "All A are B. No B are C. Therefore:", "choices": ["Some A are C.", "No A are C.", "All C are A.", "Some C are B."], "ans": 1, "explanation": "If A is contained in B and B excludes C, A excludes C."}, {"section": "Analytical Ability", "q": "Some reports are urgent. All urgent reports are reviewed immediately. Therefore:", "choices": ["All reports are reviewed immediately.", "Some reports are reviewed immediately.", "No reports are reviewed immediately.", "Only urgent reports are reviewed."], "ans": 1, "explanation": "The urgent reports are a subset of reports reviewed immediately."}, {"section": "Analytical Ability", "q": "If a request is approved, it is logged. Request P is not logged. What follows?", "choices": ["P is approved.", "P is not approved.", "P is urgent.", "P is rejected."], "ans": 1, "explanation": "Contrapositive: if approved → logged; not logged → not approved."}, {"section": "Analytical Ability", "q": "If either A or B is true, C is true. C is false. Therefore:", "choices": ["A is true.", "B is true.", "Both A and B are true.", "A and B are both false."], "ans": 3, "explanation": "If A or B would imply C, false C means neither A nor B can be true."}, {"section": "Analytical Ability", "q": "Either the server is in maintenance or the network is down, but not both. The network is not down. Therefore:", "choices": ["The server is in maintenance.", "Both are down.", "Neither condition holds.", "The server is offline for another reason."], "ans": 0, "explanation": "Exclusive-or plus not network-down leaves maintenance."}, {"section": "Analytical Ability", "q": "If P then Q; if Q then R. P is true. Which must be true?", "choices": ["Q only", "R only", "Both Q and R", "Neither"], "ans": 2, "explanation": "P→Q and Q→R gives both Q and R."}, {"section": "Analytical Ability", "q": "A report is valid only if it has a signature. Report X has no signature. Which is logically valid?", "choices": ["X is valid.", "X is invalid.", "X may be valid only if unsigned reports are allowed.", "The signature is unnecessary."], "ans": 1, "explanation": "“Only if” means validity requires a signature; no signature means not valid."}, {"section": "Analytical Ability", "q": "Which assumption is necessary for this argument? “The office should replace paper forms with an online form because online submission will reduce encoding time.”", "choices": ["All employees prefer paper.", "Online forms can capture the required information without creating greater delays elsewhere.", "Paper forms are illegal.", "Encoding time is irrelevant."], "ans": 1, "explanation": "The conclusion depends on the online form actually reducing the relevant workload/time."}, {"section": "Analytical Ability", "q": "“The agency should extend office hours because citizens report difficulty visiting during regular hours.” Which fact most strengthens the argument?", "choices": ["Many employees prefer shorter shifts.", "A large proportion of affected citizens work during regular office hours.", "The office recently repainted its lobby.", "Some citizens use online services."], "ans": 1, "explanation": "This directly connects the problem to the proposed solution."}, {"section": "Analytical Ability", "q": "“The system is reliable because it has never failed in the last month.” What is the main weakness?", "choices": ["The system has no users.", "One month may be too short a period to establish reliability.", "Reliability cannot be measured.", "Failure is always intentional."], "ans": 1, "explanation": "The evidence is limited in duration."}, {"section": "Analytical Ability", "q": "“Staff training should be reduced because trained staff spend more time attending courses.” Which evidence most weakens the claim?", "choices": ["Training rooms are expensive.", "Training temporarily reduces available work hours.", "After training, staff complete tasks faster and make fewer errors.", "Some employees dislike classroom sessions."], "ans": 2, "explanation": "Long-term productivity benefits undermine the rationale for reducing training."}, {"section": "Analytical Ability", "q": "A proposal says: “We should buy the most expensive server because expensive servers are always more reliable.” Which flaw is present?", "choices": ["Circular reasoning", "False cause/generalization from price to reliability", "Appeal to pity", "Contradiction"], "ans": 1, "explanation": "High price does not necessarily establish reliability."}, {"section": "Analytical Ability", "q": "Five tasks P, Q, R, S, T must be completed in order. P occurs before R; Q occurs after S; T occurs before R. Which could be first?", "choices": ["R", "Q", "P", "None of the above"], "ans": 2, "explanation": "P has no required predecessor; R requires P and T, Q requires S."}, {"section": "Analytical Ability", "q": "Six people A, B, C, D, E, F sit in a row. A is left of B. C is immediately right of D. E is at one end. Which arrangement is possible?", "choices": ["E A B D C F", "A E B D C F", "D C A B E F", "F A B E D C"], "ans": 0, "explanation": "Only the first satisfies A left of B, C immediately right of D, and E at an end."}, {"section": "Analytical Ability", "q": "Four reports W, X, Y, Z are ranked. W is higher than X. Y is lower than Z. X is higher than Y. Which must be true?", "choices": ["W is highest.", "Z is higher than Y.", "Y is higher than W.", "X is lower than Z."], "ans": 1, "explanation": "Y lower than Z is directly given."}, {"section": "Analytical Ability", "q": "A project has three phases: Design, Build, Test. Build cannot start until Design is complete; Test cannot start until Build is complete. If Design starts Monday and takes 3 days, Build takes 4 days, and work is done every day, when is the earliest Test can start?", "choices": ["Friday", "Sunday", "Monday of the next week", "Tuesday of the next week"], "ans": 2, "explanation": "Design runs Monday–Wednesday; Build runs Thursday–Sunday; Test can start Monday of the next week."}, {"section": "Analytical Ability", "q": "A code uses A=1, B=2, ..., Z=26. What is the value of CAB?", "choices": ["5", "6", "7", "8"], "ans": 1, "explanation": "C+A+B = 3+1+2=6."}, {"section": "Analytical Ability", "q": "If △ means +, □ means ×, and ○ means −, what is 8 □ 3 ○ 5 △ 2?", "choices": ["19", "21", "22", "25"], "ans": 1, "explanation": "Using standard precedence: 8×3−5+2 = 21."}, {"section": "Analytical Ability", "q": "If @ means “is greater than,” and # means “is equal to,” which statement means A is not greater than B?", "choices": ["A @ B", "A # B", "B @ A", "A is less than or equal to B"], "ans": 3, "explanation": "“Not greater than” means less than or equal to."}, {"section": "Analytical Ability", "q": "Find the odd one out.", "choices": ["Mercury", "Venus", "Earth", "Moon"], "ans": 3, "explanation": "The Moon is a natural satellite; the others are planets."}, {"section": "Analytical Ability", "q": "Find the odd one out.", "choices": ["Triangle", "Square", "Pentagon", "Circle"], "ans": 3, "explanation": "The circle has no straight sides; the others are polygons."}, {"section": "Analytical Ability", "q": "If the first two statements are true, is the third necessarily true? All managers attend briefing. Ramon attends briefing. Therefore Ramon is a manager.", "choices": ["Yes", "No", "Only if Ramon is senior", "Only if briefing is mandatory"], "ans": 1, "explanation": "The reasoning reverses the implication; attending briefing does not prove managerial status."}, {"section": "Analytical Ability", "q": "If no database administrator is an intern, and Carlo is an intern, what follows?", "choices": ["Carlo is a database administrator.", "Carlo is not a database administrator.", "All interns are administrators.", "Some administrators are interns."], "ans": 1, "explanation": "Carlo cannot belong to the excluded administrator group."}, {"section": "Analytical Ability", "q": "A survey of 100 employees finds 70 use system A, 50 use system B, and 30 use both. How many use at least one?", "choices": ["80", "90", "100", "120"], "ans": 1, "explanation": "Union = 70+50−30 = 90."}, {"section": "Analytical Ability", "q": "In a class of 60, 35 study English, 28 study Filipino, and 15 study both. How many study neither?", "choices": ["10", "12", "15", "18"], "ans": 1, "explanation": "At least one =35+28−15=48; neither=12."}, {"section": "Analytical Ability", "q": "A sequence of symbols repeats every four positions: ▲, ●, ■, ★, ▲, ●, ■, ★... What is the 27th symbol?", "choices": ["▲", "●", "■", "★"], "ans": 2, "explanation": "27 mod 4 = 3, so the third symbol is ■."}, {"section": "Analytical Ability", "q": "A file naming rule is: department-year-sequence. Which filename follows the rule most closely?", "choices": ["2026-HR-001", "HR-2026-001", "001-HR-2026", "HR-001-2026"], "ans": 1, "explanation": "The stated order is department-year-sequence."}, {"section": "Analytical Ability", "q": "Which statement is equivalent to “Not all requests were approved”?", "choices": ["No requests were approved.", "At least one request was not approved.", "All requests were rejected.", "Exactly one request was rejected."], "ans": 1, "explanation": "Not all means at least one exception exists."}, {"section": "Analytical Ability", "q": "Which statement is equivalent to “If the alarm is active, the door is locked”?", "choices": ["If the door is locked, the alarm is active.", "If the door is not locked, the alarm is not active.", "If the alarm is not active, the door is not locked.", "The alarm and door states are identical."], "ans": 1, "explanation": "Contrapositive: not locked → not alarm active."}, {"section": "Analytical Ability", "q": "A department must select exactly two of A, B, C, D. If A is selected, B cannot be selected. If C is selected, D must be selected. Which pair is valid?", "choices": ["A,B", "A,C", "B,C", "C,D"], "ans": 3, "explanation": "C,D satisfies the C→D rule and exactly two; A,B violates A→not B."}, {"section": "Analytical Ability", "q": "A manager says: “The average processing time fell from 20 minutes to 15 minutes, so every transaction is now faster.” What is the error?", "choices": ["The average does not imply every individual transaction improved.", "Averages cannot be calculated in minutes.", "15 is greater than 20.", "The statement is always true."], "ans": 0, "explanation": "An average can fall while some individual cases remain slower."}, {"section": "General Information", "q": "Under the 1987 Philippine Constitution, sovereignty resides in:", "choices": ["the President", "Congress", "the people", "the Supreme Court"], "ans": 2, "explanation": "Article II, Section 1 states that sovereignty resides in the people."}, {"section": "General Information", "q": "The Philippines is described by the Constitution as a:", "choices": ["federal monarchy", "democratic and republican State", "unitary socialist State", "parliamentary federation"], "ans": 1, "explanation": "Article II, Section 1 describes the Philippines as a democratic and republican State."}, {"section": "General Information", "q": "Which branch has the power to interpret laws in actual cases and controversies?", "choices": ["Executive", "Legislative", "Judicial", "Local government"], "ans": 2, "explanation": "Judicial power includes settling legal controversies and determining grave abuse of discretion."}, {"section": "General Information", "q": "The legislative power of the Philippines is vested in:", "choices": ["Congress of the Philippines", "Supreme Court", "President alone", "Civil Service Commission"], "ans": 0, "explanation": "The Constitution vests legislative power in Congress, except to the extent reserved to the people."}, {"section": "General Information", "q": "The Philippine Congress is composed of:", "choices": ["Senate and House of Representatives", "Senate and Supreme Court", "House and Cabinet", "President and Senate"], "ans": 0, "explanation": "Congress consists of the Senate and House of Representatives."}, {"section": "General Information", "q": "The President of the Philippines serves a term of:", "choices": ["4 years", "5 years", "6 years", "7 years"], "ans": 2, "explanation": "The presidential term is six years, with no reelection."}, {"section": "General Information", "q": "The constitutional principle that public office is a public trust means public officers must be:", "choices": ["treated as private contractors", "accountable to the people and serve with responsibility, integrity, loyalty, and efficiency", "free from all administrative rules", "given permanent tenure regardless of conduct"], "ans": 1, "explanation": "This reflects Article XI, Section 1."}, {"section": "General Information", "q": "RA 6713 is known as the:", "choices": ["Anti-Graft and Corrupt Practices Act", "Code of Conduct and Ethical Standards for Public Officials and Employees", "Government Procurement Reform Act", "Data Privacy Act"], "ans": 1, "explanation": "RA 6713 is the Code of Conduct and Ethical Standards."}, {"section": "General Information", "q": "Under RA 6713, which is a norm of conduct?", "choices": ["Simple living", "Political campaigning during office hours", "Personal enrichment", "Selective disclosure of public records"], "ans": 0, "explanation": "RA 6713 includes commitment to public interest, professionalism, justness, political neutrality, responsiveness, nationalism, and simple living."}, {"section": "General Information", "q": "Under RA 6713, public officials should respond to letters, inquiries, calls, and other forms of communication from the public within:", "choices": ["5 working days", "10 working days", "15 working days", "30 calendar days"], "ans": 1, "explanation": "The law provides for action on letters, inquiries, calls, or any other form of communication within 10 working days from receipt."}, {"section": "General Information", "q": "Which is generally prohibited under RA 6713 in relation to gifts?", "choices": ["Accepting gifts connected with official duties", "Receiving a commemorative token of minimal value under lawful circumstances", "Receiving salary", "Receiving authorized benefits"], "ans": 0, "explanation": "RA 6713 restricts solicitation or acceptance of gifts in connection with official duties, subject to statutory exceptions."}, {"section": "General Information", "q": "A conflict of interest exists when a public official:", "choices": ["takes a leave", "has a private interest that may be affected by the exercise of official duties", "attends a meeting", "submits a report"], "ans": 1, "explanation": "Conflict of interest concerns a private interest that may be affected by official functions."}, {"section": "General Information", "q": "The Bill of Rights is found in which article of the 1987 Constitution?", "choices": ["Article II", "Article III", "Article V", "Article XI"], "ans": 1, "explanation": "Article III contains the Bill of Rights."}, {"section": "General Information", "q": "The right against unreasonable searches and seizures is protected by:", "choices": ["Article III, Section 2", "Article VI, Section 1", "Article XI, Section 1", "Article XIII, Section 3"], "ans": 0, "explanation": "Article III, Section 2 protects against unreasonable searches and seizures."}, {"section": "General Information", "q": "Due process generally requires that government deprivation of life, liberty, or property comply with:", "choices": ["arbitrary procedure", "fair legal procedures and applicable substantive protections", "private agreements only", "administrative convenience alone"], "ans": 1, "explanation": "Due process has procedural and substantive dimensions."}, {"section": "General Information", "q": "The principle of equal protection generally means:", "choices": ["everyone must receive identical outcomes", "persons similarly situated should generally be treated alike under the law", "laws cannot classify people at all", "government may discriminate arbitrarily"], "ans": 1, "explanation": "Equal protection prohibits unjustified discrimination among similarly situated persons."}, {"section": "General Information", "q": "Human rights are best described as rights inherent to:", "choices": ["only government employees", "all human beings by virtue of being human", "citizens of one country only", "property owners"], "ans": 1, "explanation": "Human rights attach to all persons by virtue of human dignity."}, {"section": "General Information", "q": "Which is an example of a civil and political right?", "choices": ["Right to life", "Right to a luxury vehicle", "Right to a corporate dividend", "Right to a government position"], "ans": 0, "explanation": "The right to life is a fundamental human right."}, {"section": "General Information", "q": "The Universal Declaration of Human Rights was adopted by the UN General Assembly in:", "choices": ["1945", "1948", "1951", "1966"], "ans": 1, "explanation": "The UDHR was adopted on 10 December 1948."}, {"section": "General Information", "q": "The principle of non-discrimination in human rights means:", "choices": ["rights depend on social status", "rights should be enjoyed without unjustified distinction based on protected grounds", "only citizens have rights", "government may deny rights without reason"], "ans": 1, "explanation": "Non-discrimination is a core human-rights principle."}, {"section": "General Information", "q": "Which gas is a major greenhouse gas emitted from fossil-fuel combustion?", "choices": ["Oxygen", "Carbon dioxide", "Helium", "Neon"], "ans": 1, "explanation": "Carbon dioxide is a major greenhouse gas associated with fossil-fuel combustion."}, {"section": "General Information", "q": "The Philippine Clean Air Act is Republic Act:", "choices": ["8749", "9003", "9275", "11038"], "ans": 0, "explanation": "RA 8749 is the Philippine Clean Air Act of 1999."}, {"section": "General Information", "q": "The Ecological Solid Waste Management Act is Republic Act:", "choices": ["8749", "9003", "9275", "10121"], "ans": 1, "explanation": "RA 9003 is the Ecological Solid Waste Management Act of 2000."}, {"section": "General Information", "q": "The Philippine Clean Water Act is Republic Act:", "choices": ["9003", "9275", "8749", "7586"], "ans": 1, "explanation": "RA 9275 is the Philippine Clean Water Act of 2004."}, {"section": "General Information", "q": "Which practice best follows the waste hierarchy?", "choices": ["Burn all waste immediately", "Reduce waste generation before relying on disposal", "Mix hazardous and ordinary waste", "Dispose of reusable materials first"], "ans": 1, "explanation": "Waste reduction at source is preferred over downstream disposal."}, {"section": "General Information", "q": "A protected area is established primarily to:", "choices": ["permit unrestricted extraction", "conserve biodiversity, ecosystems, and significant natural or cultural features", "eliminate all human activity everywhere", "replace all local governments"], "ans": 1, "explanation": "Protected areas are established for conservation and management of important natural/cultural resources."}, {"section": "General Information", "q": "Which is a renewable energy source?", "choices": ["Coal", "Natural gas", "Solar energy", "Diesel"], "ans": 2, "explanation": "Solar energy is naturally replenished."}, {"section": "General Information", "q": "Disaster risk is commonly understood as arising from the interaction of hazards with:", "choices": ["vulnerability and exposure", "salary grades", "office hierarchy", "population alone"], "ans": 0, "explanation": "Risk is related to hazard, exposure, and vulnerability, with capacity affecting impacts."}, {"section": "General Information", "q": "Climate change adaptation primarily refers to:", "choices": ["adjusting systems and practices to actual or expected climate effects", "eliminating all weather events", "increasing fossil-fuel use", "measuring office attendance"], "ans": 0, "explanation": "Adaptation addresses vulnerability to climate impacts."}, {"section": "General Information", "q": "Which action best demonstrates environmental management in a government office?", "choices": ["Leaving equipment powered on indefinitely", "Implementing energy efficiency, waste segregation, and responsible resource use", "Disposing all waste in one container", "Printing every email automatically"], "ans": 1, "explanation": "These measures reduce resource consumption and environmental impact."}];
+const TOTAL = questions.length;
+const EXAM_SECONDS = 3 * 60 * 60 + 10 * 60;
+
+let current = 0;
+let answers = Array(TOTAL).fill(null);
+let flagged = Array(TOTAL).fill(false);
+let remaining = EXAM_SECONDS;
+let timerHandle = null;
+let started = false;
+let submitted = false;
+
+const $ = id => document.getElementById(id);
+
+function startExam(){
+  $('startOverlay').classList.add('hidden');
+  started = true;
+  render();
+  timerHandle = setInterval(tick, 1000);
+}
+
+function tick(){
+  if(!started || submitted) return;
+  remaining--;
+  if(remaining <= 0){
+    remaining = 0;
+    updateTimer();
+    clearInterval(timerHandle);
+    submitExam(true);
+    return;
+  }
+  updateTimer();
+}
+
+function updateTimer(){
+  const h = Math.floor(remaining/3600);
+  const m = Math.floor((remaining%3600)/60);
+  const s = remaining%60;
+  $('timer').textContent = [h,m,s].map(x=>String(x).padStart(2,'0')).join(':');
+  $('timer').className = 'timer' + (remaining <= 600 ? ' danger' : remaining <= 1800 ? ' warn' : '');
+}
+
+function render(){
+  const q = questions[current];
+  $('questionNo').textContent = `Question ${current+1} of ${TOTAL}`;
+  $('sectionBadge').textContent = q.section;
+  $('questionText').textContent = q.q;
+
+  const choices = $('choices');
+  choices.innerHTML = '';
+  q.choices.forEach((c,i)=>{
+    const label = document.createElement('label');
+    label.className = 'choice' + (answers[current]===i ? ' selected':'');
+    label.innerHTML = `<input type="radio" name="answer" ${answers[current]===i?'checked':''}> <b>${String.fromCharCode(65+i)}.</b> ${escapeHtml(c)}`;
+    label.onclick = ()=>{
+      answers[current]=i;
+      renderChoicesOnly();
+      updateStats();
+      updatePalette();
+    };
+    choices.appendChild(label);
+  });
+
+  $('flagBtn').textContent = flagged[current] ? '⚑ UNMARK' : '⚑ MARK';
+  updateProgress();
+  updatePalette();
+  updateStats();
+  updateTimer();
+}
+
+function renderChoicesOnly(){
+  [...$('choices').children].forEach((el,i)=>{
+    el.classList.toggle('selected', answers[current]===i);
+    const input=el.querySelector('input');
+    input.checked = answers[current]===i;
+  });
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+
+function nextQuestion(){
+  if(current < TOTAL-1){current++; render();}
+}
+function prevQuestion(){
+  if(current > 0){current--; render();}
+}
+function toggleFlag(){
+  flagged[current]=!flagged[current];
+  render();
+}
+function updateProgress(){
+  const answered=answers.filter(x=>x!==null).length;
+  $('progressBar').style.width=(answered/TOTAL*100)+'%';
+}
+function updateStats(){
+  $('answeredCount').textContent=answers.filter(x=>x!==null).length;
+  $('flagCount').textContent=flagged.filter(Boolean).length;
+}
+function updatePalette(){
+  const p=$('palette');
+  p.innerHTML='';
+  questions.forEach((q,i)=>{
+    const b=document.createElement('div');
+    b.className='pnum'+(answers[i]!==null?' answered':'')+(flagged[i]?' flag':'')+(i===current?' current':'');
+    b.textContent=i+1;
+    b.title=q.section;
+    b.onclick=()=>{current=i;render();window.scrollTo({top:0,behavior:'smooth'});};
+    p.appendChild(b);
+  });
+}
+function buildSectionTags(){
+  const counts={};
+  questions.forEach(q=>counts[q.section]=(counts[q.section]||0)+1);
+  $('sectionTags').innerHTML=Object.entries(counts).map(([k,v])=>`<span>${k}: ${v}</span>`).join('');
+}
+
+function submitExam(auto=false){
+  if(submitted) return;
+  const unanswered=answers.filter(x=>x===null).length;
+  if(!auto){
+    const msg = unanswered
+      ? `You still have ${unanswered} unanswered item(s). Submit anyway?`
+      : 'Submit your exam now? Answers and explanations will be revealed.';
+    if(!confirm(msg)) return;
+  }
+  submitted=true;
+  clearInterval(timerHandle);
+  let score=0;
+  questions.forEach((q,i)=>{if(answers[i]===q.ans)score++;});
+  const pct=(score/TOTAL*100);
+  const result=$('result');
+  result.classList.add('show');
+  result.innerHTML=`
+    <h2 style="margin-top:0">${auto?'TIME IS UP — ':'EXAM SUBMITTED — '}RESULT</h2>
+    <div class="score">${score}/${TOTAL}</div>
+    <p><b>${pct.toFixed(2)}%</b> correct • ${TOTAL-score} incorrect/unanswered</p>
+    <p><b>Practice benchmark:</b> 80% = 120/150.</p>
+    <button class="btn-green" onclick="showReview('wrong')">SHOW WRONG / UNANSWERED</button>
+    <button class="btn-dark" onclick="showReview('all')">SHOW ALL ANSWERS</button>
+    <div id="review"></div>
+  `;
+  document.querySelector('.exam').classList.add('hidden');
+  document.querySelector('.sidebar').classList.add('hidden');
+  result.scrollIntoView({behavior:'smooth'});
+}
+
+function showReview(mode){
+  const review=$('review');
+  let out='';
+  questions.forEach((q,i)=>{
+    const isCorrect=answers[i]===q.ans;
+    if(mode==='wrong' && isCorrect) return;
+    const user=answers[i]===null ? 'No answer' : `${String.fromCharCode(65+answers[i])}. ${q.choices[answers[i]]}`;
+    const correct=`${String.fromCharCode(65+q.ans)}. ${q.choices[q.ans]}`;
+    out+=`<div class="review-item">
+      <div><b>${i+1}. ${escapeHtml(q.q)}</b></div>
+      <div class="${isCorrect?'correct':'wrong'}">${isCorrect?'✓ Correct':'✗ Incorrect / Unanswered'}</div>
+      <div class="answer-box"><b>Your answer:</b> ${escapeHtml(user)}<br><b>Correct answer:</b> ${escapeHtml(correct)}<br><span class="small">${escapeHtml(q.explanation)}</span></div>
+    </div>`;
+  });
+  review.innerHTML=out || '<p>No wrong answers in this view.</p>';
+}
+
+function confirmReset(){
+  if(confirm('Reset the entire 150-item reviewer and timer?')){
+    location.reload();
+  }
+}
+
+buildSectionTags();
+updateTimer();
+</script>
+</body>
+</html>
+apps-fileview.texmex_20260917.00_p1
+CSC_Professional_Hard_Mode_150_Reviewer.html
+Displaying CSC_Professional_Hard_Mode_150_Reviewer.html.
